@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-qp_s)##^8634nm6b0sm@*zy7&ymerd9jo50xx3&o-7lzmgo#$f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'hangar_launch_vehicle_app'
+    'hangar_launch_vehicle_app',
+    # DRF
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +79,12 @@ WSGI_APPLICATION = 'hangar_launch_vehicle.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'assembly_hangar_vehicles',
+        'USER': 'postgres',
+        'PASSWORD': 'psadeiw123',
+        'HOST': 'localhost',
+        'PORT': 5433,
     }
 }
 

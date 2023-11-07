@@ -1,25 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from hangar_launch_vehicle_app.models import Components
 
-# Create your views here.
-
+# Create your viesws here.
 """
-{
-    'id': 1,
-    'title': 'Двигатель РД-1046',
-    'category': 'Двигатели',
-    'description': 'Двигатель впервые в России был спроектирован по безгенераторной схеме, обеспечивающей высокую надежность, особенно при многократных включениях. В двигателе применены раздельные турбонасосные агрегаты кислорода и водорода, причем рабочая частота вращения ротора ТНАГ-123 тыс.об/мин',
-    'image': 'image/двигатель_рд-1046.png',
-}
-{
-    'id': 2,
-    'title': 'Двигатель РД-191',
-    'category': 'Двигатели',
-    'description': 'РД-191 — жидкостный ракетный двигатель. Используется в 1-й ступени семейства российских ракет-носителей «Ангара» (лёгкий и тяжёлый классы)',
-    'image': 'image/двигатель_рд-191.png',
-}
-"""
-
 descrips = [
             "В августе 2018 года было сообщено, что первая товарная партия титановых шаробаллонов (ТШБ) для ракет-носителей «Ангара» отправлена с Воронежского механического завода (ВМЗ) в ПО «Полёт». Это первый комплект ТШБ российского производства: до 2014 года для российских ракет-носителей их поставлял завод «Южмаш» (Украина)",
             "В качестве верхней ступени предусмотрено применение разгонных блоков: «Бриз-КМ», «Бриз-М», кислородно-водородный среднего класса (КВСК) и кислородно-водородный тяжёлого класса (КВТК)",
@@ -84,26 +68,34 @@ def GetData(id):
             },
         ]
     }}
+    
+    options=Components.objects.all()
     if id != 0:
-        return options['data']['vars'][id - 1]
+        options=Components.objects.filter(id=id)
+        return options
+        #return options['data']['vars'][id - 1]
     else:
-        return options['data']
-
+        return options
+"""
 
 def GetOptions(request):
-    input_text = request.GET.get('text')
-    print(input_text)
+    input_text = request.GET.get('rocketcopm')
+    options=Components.objects.all()
+    #context={'vars': options}
     if input_text:
-        options = GetData(0)
-        print(options)
-        filtered_options = [var for var in options['vars'] if input_text in var['category'].lower()]
-        print(filtered_options)
-        context = {'vars': filtered_options, 'find': input_text}
-        print(context['find'])
-        return render(request, 'main_page.html', context)
+        filtered_options = Components.objects.filter(category__icontains=input_text)
+        #context = {'vars': filtered_options, 'find': input_text}
+        return render(request, 'main_page.html', {'data' : {
+        'result': filtered_options, 'find': input_text
+    }})
     else:
-        return render(request, 'main_page.html', GetData(0))
+        return render(request, 'main_page.html', {'data' : {
+        'result': options
+    }})
 
 
 def GetOption(request, id):
-    return render(request, 'rocket_page.html', GetData(id))
+    result = Components.objects.get(id=id)
+    return render(request, 'rocket_page.html', {'data' : {
+        'result': result
+    }})
